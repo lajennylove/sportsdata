@@ -1,11 +1,9 @@
 let Token, RefreshToken, ExpiresAt;
 
 Cypress.Commands.add('auth', () => {
-  describe('loginByAuth0Api', () => {
-    it('passes', () => {
       cy.request({
         method: 'POST',
-        url: 'https://api.sportsanddata.com/api/v1/Authentication/token',
+        url: 'Authentication/token',
         body: {
             "ClientId" : "BF9E7D5C-C4C3-4C5E-84CD-E746CDF39826",
             "ClientGivenName" : "PointSpreadUser",
@@ -14,15 +12,12 @@ Cypress.Commands.add('auth', () => {
             "Role" : "Report",
         },
         })
-        .its('body')
         .then(res => {
-            console.log(res)
-            Token = res.Token
-            RefreshToken = res.RefreshToken
-            ExpiresAt = res.ExpiresAt
+            Token = res.body.Token
+            RefreshToken = res.body.RefreshToken
+            ExpiresAt = res.body.ExpiresAt
+            localStorage.setItem('Token', Token)
         })
-    })
-  })
 }) 
 
 
@@ -30,15 +25,16 @@ before(() => {
   cy.auth()
 })
 
-describe('Getting Data', () => {
-  it.only('Service 1', () => {
-
-    cy.intercept('https://api.sportsanddata.com/api/v1/GetLatestOdds?sportType=football&sportSubType=nfl', (req) => {
-      req.headers['authorization'] = `token ${Token}`
+describe('Read API', () => {
+  it('Test 1', () => {
+    cy.request('GetLatestOdds?sportType=football&sportSubType=nfl',{
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('Token')}` //no se como sea tu autorización
+      }
     })
-    .its('body')
     .then(res => {
-        console.log(res)
+        expect(res.status).to.eq(200)
+      //expect(res.body.data.user.id).to.equal('1')
     })
 
   })
