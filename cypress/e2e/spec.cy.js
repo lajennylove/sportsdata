@@ -155,13 +155,13 @@ describe('Testing API: GetLastGames', () => {
     cy.getTeams('NFL').then(teams => {
       teams.forEach(team => {
         
-        cy.request('GetLastGames?leagueName=NFL&teamName=' + team.Team_Nick,{
+        cy.request('GetLastGames?sportType=football&leagueName=NFL&teamName=' + team.Team_Nick,{
           headers: {
             authorization: `Bearer ${localStorage.getItem('Token')}` 
           }
         })
         .then(res => {
-            console.log('GetLastGames?leagueName=NFL&teamName=' + team.Team_Nick)
+            console.log('GetLastGames?sportType=football&leagueName=NFL&teamName=' + team.Team_Nick)
             expect(res.status).to.eq(200)
             console.log(res)
             //expect(res.body.data.length).to.be.greaterThan(1)
