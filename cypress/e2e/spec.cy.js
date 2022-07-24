@@ -23,6 +23,7 @@ Cypress.Commands.add('auth', () => {
         })
 }) 
 
+
 // Cypress function to store the league's team names into an let array using the league name as parameter
 Cypress.Commands.add('getTeams', (leagueName) => {
   let teams = []
@@ -43,7 +44,7 @@ Cypress.Commands.add('getTeams', (leagueName) => {
   })
 })
 
-// Run the auth function before each test
+// Run the auth function before all the tests
 before(() => {
   cy.log('Auth0: Getting the token')
   cy.auth()
