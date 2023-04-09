@@ -1,9 +1,9 @@
 <p align="center">
   <a href="https://www.cypress.io">
     <picture>
-      <source media="(prefers-color-scheme: dark)"  srcset="./assets/cypress-logo-dark.png">
-      <source media="(prefers-color-scheme: light)" srcset="./assets/cypress-logo-light.png">
-      <img alt="Cypress Logo" src="./assets/cypress-logo-light.png">
+      <source media="(prefers-color-scheme: dark)"  srcset="https://github.com/cypress-io/cypress/raw/develop/assets/cypress-logo-dark.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/cypress-io/cypress/raw/develop/assets/cypress-logo-light.png">
+      <img alt="Cypress Logo" src="https://github.com/cypress-io/cypress/raw/develop/assets/cypress-logo-light.png">
     </picture>    
   </a>
 </p>
