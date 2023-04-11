@@ -1,6 +1,8 @@
 // Global variables
 let token
 let teams = []
+let request
+let sports = ['NFL', 'NBA', 'MLB', 'NHL']
 
 // Function to auth to the application and store the token
 Cypress.Commands.add('auth', () => {
@@ -56,8 +58,53 @@ beforeEach(() => {
 
 // Testing the endpoint GetLeagueTeams
 describe('Testing API: GetLeagueTeams', () => {
+  
+  // Loop through the sports array and run the test for each sport
+  sports.forEach(sport => {
+
+    // Run the getTeams function to get the teams for the sport
+    it('League: ' + sport, () => {
+
+      // URL encode the request
+      request = encodeURI( 'GetLeagueTeams?leagueName=' + sport )
+      
+      // Run the request
+      cy.request(request, {
+        headers: {
+          authorization: `Bearer ${token}` 
+        }
+      })
+      .then(res => {
+        
+        // Check if the request was successful
+        expect(res.status, 'Connection successful').to.eq(200)
+        
+        // Check if the response has data
+        if (res.body.data.length <= 0) {
+          Cypress.log({
+            name: 'Error:',
+            message: 'No teams found in the league'
+          })
+        } 
+        else {
+          expect(res.body.data.length).to.be.greaterThan(0)
+          Cypress.log({
+            name: 'Info:',
+            message: res.body.data.length + ' teams were found in the league'
+          })
+        }
+        
+      })
+    })
+
+  })
+ 
+  
+
   it('League: NFL', () => {
-    cy.request('GetLeagueTeams?leagueName=NFL',{
+    request = encodeURI( 'GetData?MethodName=WG_spGetLeagueTeams&MethodParams=leagueName:NFL' )
+
+    cy.request(request, {
       headers: {
         authorization: `Bearer ${token}` 
       }
@@ -79,73 +126,5 @@ describe('Testing API: GetLeagueTeams', () => {
     })
   })
 
-  it('League: NCAAB', () => {
-    cy.request('GetLeagueTeams?leagueName=NCAAB',{
-      headers: {
-        authorization: `Bearer ${token}` 
-      }
-    })
-    .then(res => {
-      expect(res.status, 'Connection successful').to.eq(200)
-      if (res.body.data.length <= 0) {
-        Cypress.log({
-          name: 'Error:',
-          message: 'No teams found in the league'
-        })
-      } else {
-        expect(res.body.data.length).to.be.greaterThan(0)
-        Cypress.log({
-          name: 'Info:',
-          message: res.body.data.length + ' teams were found in the league'
-        })
-      }
-    })
-  })
-
-  it('League: NCAAF', () => {
-    cy.request('GetLeagueTeams?leagueName=NCAAF',{
-      headers: {
-        authorization: `Bearer ${token}` 
-      }
-    })
-    .then(res => {
-      expect(res.status, 'Connection successful').to.eq(200)
-      if (res.body.data.length <= 0) {
-        Cypress.log({
-          name: 'Error:',
-          message: 'No teams found in the league'
-        })
-      } else {
-        expect(res.body.data.length).to.be.greaterThan(0)
-        Cypress.log({
-          name: 'Info:',
-          message: res.body.data.length + ' teams were found in the league'
-        })
-      }
-    })
-  })
-
-  it('League: NBA', () => {
-    cy.request('GetLeagueTeams?leagueName=NBA',{
-      headers: {
-        authorization: `Bearer ${token}` 
-      }
-    })
-    .then(res => {
-      expect(res.status, 'Connection successful').to.eq(200)
-      if (res.body.data.length <= 0) {
-        Cypress.log({
-          name: 'Error:',
-          message: 'No teams found in the league'
-        })
-      } else {
-        expect(res.body.data.length).to.be.greaterThan(0)
-        Cypress.log({
-          name: 'Info:',
-          message: res.body.data.length + ' teams were found in the league'
-        })
-      }
-    })
-  })
 
 })
