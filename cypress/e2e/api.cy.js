@@ -2,7 +2,7 @@
 let token
 let teams = []
 let request
-let sports = ['NFL', 'NBA', 'MLB', 'NHL']
+let sports = ['NFL', 'NBA', 'MLB', 'NHL', 'NCAAF', 'NCAAB']
 
 // Function to auth to the application and store the token
 Cypress.Commands.add('auth', () => {
@@ -64,66 +64,61 @@ describe('Testing API: GetLeagueTeams', () => {
 
     // Run the getTeams function to get the teams for the sport
     it('League: ' + sport, () => {
+      request = 'GetData?MethodName=WG_spGetLeagueTeams&MethodParams=leagueName=' + sport
 
-      // URL encode the request
-      request = encodeURI( 'GetLeagueTeams?leagueName=' + sport )
-      
-      // Run the request
-      cy.request(request, {
+      let teamInfo = {
+        teamName: 0,
+        teamFirstName: 0,
+        teamNickName: 0,
+        teamShortName: 0,
+        teamConfName: 0,
+        teamConfNameShort: 0,
+        teamDivName: 0,
+        teamDivNameShort: 0,
+        teamLocationCountry: 0,
+        teamThumbnail: 0,
+        teamLogo: 0
+      }
+  
+      cy.request({
+        method: 'GET',
+        url: encodeURI( request ),
         headers: {
           authorization: `Bearer ${token}` 
-        }
+        },
+        failOnStatusCode: false
       })
       .then(res => {
         
-        // Check if the request was successful
-        expect(res.status, 'Connection successful').to.eq(200)
+        // Loop through the teams and check if the team has all its fields filled
+        res.body.data.forEach(team => {
+          teamInfo.teamName           = team.teamName           != '' ? teamInfo.teamName          : teamInfo.teamName+1
+          teamInfo.teamFirstName      = team.teamFirstName      != '' ? teamInfo.teamFirstName     : teamInfo.teamFirstName+1
+          teamInfo.teamNickName       = team.teamNickName       != '' ? teamInfo.teamNickName      : teamInfo.teamNickName+1
+          teamInfo.teamConfName       = team.teamConfName       != '' ? teamInfo.teamConfName      : teamInfo.teamConfName+1
+          teamInfo.teamConfNameShort  = team.teamConfNameShort  != '' ? teamInfo.teamConfNameShort : teamInfo.teamConfNameShort+1
+          teamInfo.teamDivName        = team.teamDivName        != '' ? teamInfo.teamDivName       : teamInfo.teamDivName+1
+          teamInfo.teamDivNameShort   = team.teamDivNameShort   != '' ? teamInfo.teamDivNameShort  : teamInfo.teamDivNameShort+1
+          teamInfo.teamLogo           = team.teamLogo           != '' ? teamInfo.teamLogo          : teamInfo.teamLogo+1
+          teamInfo.teamThumbnail      = team.teamThumbnail      != '' ? teamInfo.teamThumbnail     : teamInfo.teamThumbnail+1
+        })
         
-        // Check if the response has data
-        if (res.body.data.length <= 0) {
-          Cypress.log({
-            name: 'Error:',
-            message: 'No teams found in the league'
-          })
-        } 
-        else {
-          expect(res.body.data.length).to.be.greaterThan(0)
-          Cypress.log({
-            name: 'Info:',
-            message: res.body.data.length + ' teams were found in the league'
-          })
-        }
+        // Run the assertions
+        expect(res.status, 'Connection successful').to.eq(200)
+        expect(res.body.data.length, 'Number of teams').to.be.greaterThan(0)
+        expect(teamInfo.teamName, 'Teams without name').to.be.lessThan(1)
+        expect(teamInfo.teamFirstName, 'Teams without first name').to.be.lessThan(1)
+        expect(teamInfo.teamNickName, 'Teams without nick name').to.be.lessThan(1)
+        expect(teamInfo.teamConfName, 'Teams without conference name').to.be.lessThan(1)
+        expect(teamInfo.teamConfNameShort, 'Teams without conference short name').to.be.lessThan(1)
+        expect(teamInfo.teamDivName, 'Teams without division name').to.be.lessThan(1)
+        expect(teamInfo.teamDivNameShort, 'Teams without division short name').to.be.lessThan(1)
+        expect(teamInfo.teamLogo, 'Teams without logo').to.be.lessThan(1)
+        expect(teamInfo.teamThumbnail, 'Teams without thumbnail').to.be.lessThan(1)
         
       })
     })
 
-  })
- 
-  
-
-  it('League: NFL', () => {
-    request = encodeURI( 'GetData?MethodName=WG_spGetLeagueTeams&MethodParams=leagueName:NFL' )
-
-    cy.request(request, {
-      headers: {
-        authorization: `Bearer ${token}` 
-      }
-    })
-    .then(res => {
-      expect(res.status, 'Connection successful').to.eq(200)
-      if (res.body.data.length <= 0) {
-        Cypress.log({
-          name: 'Error:',
-          message: 'No teams found in the league'
-        })
-      } else {
-        expect(res.body.data.length).to.be.greaterThan(0)
-        Cypress.log({
-          name: 'Info:',
-          message: res.body.data.length + ' teams were found in the league'
-        })
-      }
-    })
   })
 
 
