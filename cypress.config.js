@@ -6,7 +6,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl:process.env.BASE_API_URL,
+    baseUrl:process.env.BASE_URL,
     env: {
       // environment variables
       MiddlewareUrl:process.env.BASE_MIDDLEWARE_URL,
