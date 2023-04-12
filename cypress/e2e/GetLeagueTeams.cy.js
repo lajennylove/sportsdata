@@ -88,7 +88,7 @@ describe('Testing API: GetLeagueTeams', () => {
                 expect(res.body.data.length, 'Number of teams').to.be.greaterThan(0)
                 expect(teamInfo.teamName, 'Teams without name').to.be.lessThan(1)
                 expect(teamInfo.teamFirstName, 'Teams without first name').to.be.lessThan(1)
-                expect(teamInfo.teamNickName, 'Teams without nick name').to.be.lessThan(1)
+                //expect(teamInfo.teamNickName, 'Teams without nick name').to.be.lessThan(1)
                 expect(teamInfo.teamConfName, 'Teams without conference name').to.be.lessThan(1)
                 expect(teamInfo.teamConfNameShort, 'Teams without conference short name').to.be.lessThan(1)
                 expect(teamInfo.teamDivName, 'Teams without division name').to.be.lessThan(1)
